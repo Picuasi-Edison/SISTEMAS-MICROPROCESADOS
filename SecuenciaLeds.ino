@@ -37,7 +37,7 @@ i=0;
 delay(400);
 
 /*=================================================*/
-//Apagamos todos los leds pa observar mejor la secuencia
+//Apagamos todos los leds para observar mejor la secuencia
 for(;i<6;i++) 
 { 
  digitalWrite(leds[i],LOW);
