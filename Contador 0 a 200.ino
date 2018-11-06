@@ -41,7 +41,7 @@ digitalWrite(cen,HIGH); //activacion de pin de centenas
  delay(100);  // espero
  digitalWrite(cen,LOW); //desactivacion de pin de centenas
  digitalWrite(dec,HIGH);  //activacion de pin de decenas
- digitalWrite(unidades,LOW);  //desactivacion de pin de unidades
+ digitalWrite(uni,LOW);  //desactivacion de pin de unidades
  contador(decenas);    // llamo metodo de visualizacion
  delay(100);  // espero
  digitalWrite(cen,LOW); //desactivacion de pin de centenas
