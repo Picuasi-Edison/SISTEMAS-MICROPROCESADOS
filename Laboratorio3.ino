@@ -1,8 +1,8 @@
 int A=7,B=6,C=5,D=4;// pines de los leds
-int on=0;
-int i=0;
-int dec=9;
-int uni=8;
+int on=0;//variable de encendido
+int i=0;//variable de conteo
+int dec=9;//variable pin decenas
+int uni=8;//variable pin unidades
 int unidades,decenas;
 float cad;
 float conversion;
@@ -11,10 +11,10 @@ int tam;
 int valor;
 void setup() {
 Serial.begin(9600);
-pinMode(A,OUTPUT);
-pinMode(B,OUTPUT);
-pinMode(C,OUTPUT);
-pinMode(D,OUTPUT);
+pinMode(A,OUTPUT);//inicializa el pin A del display
+pinMode(B,OUTPUT);//inicializa el pin B del display
+pinMode(C,OUTPUT);//inicializa el pin C del display
+pinMode(D,OUTPUT);//inicializa el pin D del display
 pinMode(uni,OUTPUT);
 pinMode(dec,OUTPUT);
 attachInterrupt(0,sistema,FALLING);
