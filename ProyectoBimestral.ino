@@ -4,7 +4,7 @@
 
 const byte FILAS=4; //cuatro filas
 const byte COLS=4; //cuatro columnas
-int numero=0;
+int numero=0;//variable de conteo
 
 const int rs = 9, en = 8, d4 = 7, d5 = 6, d6 = 5, d7 = 4;
 
@@ -29,12 +29,12 @@ Keypad keypad = Keypad(makeKeymap(teclado),pinfilas,pincolumnas, FILAS, COLS);
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 int on=0; //variable de encendido
-int pinon=51; //
-int pinoff=50;
-int bot=2;
-int bot2=3;
-int verde=13;
-int rojo=12;
+int pinon=51; ////variable 
+int pinoff=50;//variable 
+int bot=2;//variable interrupcion
+int bot2=3;//variable interrupcion
+int verde=13;//variable led
+int rojo=12;//variable led
 
 int P1=29; // pin de salida para display
 int P2=28; // pin de salida para display
