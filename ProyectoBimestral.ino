@@ -28,10 +28,11 @@ byte pincolumnas[COLS]={31,33,35,37};
 Keypad keypad = Keypad(makeKeymap(teclado),pinfilas,pincolumnas, FILAS, COLS);
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
-int on=0;
-int pinon=51;
+int on=0; //variable de encendido
+int pinon=51; //
 int pinoff=50;
 int bot=2;
+int bot2=3;
 int verde=13;
 int rojo=12;
 
@@ -43,7 +44,7 @@ int i=0;  // variable de conteo
 int dec=14; // pin de acitivacion decenas
 int uni=11;  // pin de activacion unidades
 int decenas; // variable de almacenamiento de decenas
-int unidades;
+int unidades;//variable unidades
 void setup() {
   
   // put your setup code here, to run once:
@@ -51,26 +52,26 @@ void setup() {
  pinMode(P2,OUTPUT); // configuracion de pin
  pinMode(P3,OUTPUT); // configuracion de pin
  pinMode(P4,OUTPUT); // configuracion de pin 
- pinMode(dec,OUTPUT); // configuracion de pin
- pinMode(uni,OUTPUT); // configuracion de pin
-  Serial.begin(9600);
+ pinMode(dec,OUTPUT); // configuracion de decenas
+ pinMode(uni,OUTPUT); // configuracion de unidades
+ pinMode(pinon,OUTPUT);// configuracion de pin 
+ pinMode(pinoff,OUTPUT);// configuracion de pin 
+ pinMode(bot,INPUT);// configuracion de boton1
+ pinMode(bot2,INPUT);// configuracion de boton2
+ pinMode(verde,OUTPUT);// configuracion pin led 
+ pinMode(rojo,OUTPUT);// configuracion pin led
+ lcd.begin(16,2);//inicializa lcd
+ Serial.begin(9600);//inicializa CX Serial
+ attachInterrupt(digitalPinToInterrupt(bot),sistema,RISING);//configuracion interrupcion 1
+ attachInterrupt(digitalPinToInterrupt(bot2),Masterpass,RISING);//configuracion interrupcion 2
+  
+ ///////////////////////////////////////////////////
   Serial.println("SISTEMA DE SEGURIDAD");
   Serial.println("Reinciar->! Evaluar la contraseña->?");
   Serial.print("Enter password: ");
   lcd.setCursor(0,0);
   lcd.print("Clave:");
   keypad.addEventListener(keypadEvent);
-  attachInterrupt(digitalPinToInterrupt(bot),sistema,RISING);
-  attachInterrupt(digitalPinToInterrupt(3),Masterpass,RISING);
-  pinMode(pinon,OUTPUT);
-  pinMode(pinoff,OUTPUT);
-  pinMode(bot,INPUT);
-
-  pinMode(verde,OUTPUT);
-  pinMode(rojo,OUTPUT);
-
-  
-  lcd.begin(16,2);
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("S.DE.SEGURIDAD");
@@ -78,22 +79,17 @@ void setup() {
   lcd.print("Ingrese Codigo:");
   delay(1000);
   lcd.clear();
-
-
-  
-  
 }
 void loop() {
-  // put your main code here, to run repeatedly:
-  
   if(on==1){
-    dis();
-  keypad.getKey();
+  dis();//mamamos al metodo
+  keypad.getKey();//keypad
+  //ingreso por serial
   if (Serial.available()){
-    char input = Serial.read();
-    lcd.write(Serial.read());
+    char input = Serial.read();//lectura CX Serial
+    lcd.write(Serial.read());//muestra en lcd valor ingresado
+    //opciones
     switch (input){
-     
       case '!': //reset password
         alarma.reset();
         currentLength = 0;
@@ -130,20 +126,23 @@ void loop() {
 }
 void sistema(){
   on=1-on;
+  //estado del sistema
   if(on==1){
-    digitalWrite(pinon,HIGH);
-    digitalWrite(pinoff,LOW);
+    digitalWrite(pinon,HIGH);//enciende led
+    digitalWrite(pinoff,LOW);//apaga led
   }else{
-    digitalWrite(pinoff,HIGH);
-    digitalWrite(pinon,LOW);
+    digitalWrite(pinoff,HIGH);//enciende led
+    digitalWrite(pinon,LOW);//apaga led
   }
 }
 
 void keypadEvent(KeypadEvent eKey){
+  //ingreso por keypad
   if(on==1){
   switch (keypad.getState()){
     case PRESSED:
   lcd.print(eKey);
+  //verificar
   switch (eKey){
     case '*': checkPassword(); break;
     break;
@@ -169,21 +168,19 @@ void checkPassword(){
      lcd.clear();
      lcd.setCursor(0,1);
      lcd.print("CLAVE CORRECTA");
-     digitalWrite(verde,HIGH);
-     digitalWrite(rojo,LOW);
-     reset_password();
-     numero++;
-     Serial.println(numero);
-     delay(1000);    
+     digitalWrite(verde,HIGH);//enciende led
+     digitalWrite(rojo,LOW);//apaga led
+     reset_password();//llamamos metodo
+     numero++;//aumento de variable
+     dis();//llamamos metodo
+     delay(600);
      }else{
-      lcd.clear();
-     lcd.setCursor(0,1);
+     lcd.clear();//limpia el lcd
+     lcd.setCursor(0,1);//posiciona el cursor
      lcd.print("CLAVE INCORRECTA");
-     reset_password();
-     digitalWrite(rojo,HIGH);
-     digitalWrite(verde,LOW);
-
-
+     reset_password();//llamamos al metodo
+     digitalWrite(rojo,HIGH);//enciende led
+     digitalWrite(verde,LOW);//apaga led
      }
      delay(1000);
     lcd.clear();
@@ -198,30 +195,40 @@ void reset_password(){
   }
 }
 void reset_clave(){
+  lcd.clear();
+  lcd.setCursor(0,0);//posiciona el cursor
+  lcd.print("Select User");
   if(on==1){
 //pregunte q user quiere cambiar
 //lees el # de ususaro
-  lcd.setCursor(0,0);
-  lcd.print("Sleccionar U.C");
   switch (keypad.getState()){
   case '1':
   clave1.set("11111");//trabajador 1
   //clave cambiada imprimir 
-  lcd.setCursor(0,0);
+  lcd.setCursor(0,0);//posiciona el cursor
   lcd.print("");
-  lcd.setCursor(0,1);
+  lcd.setCursor(0,1);//posiciona el cursor
   lcd.print("Clave Cambiada");
   break;
   case '2':
   clave2.set("22222");//trabajador 2
+  lcd.setCursor(0,0);//posiciona el cursor
+  lcd.print("");
+  lcd.setCursor(0,1);//posiciona el cursor
   lcd.print("Clave Cambiada"); 
   break;
   case '3':
   clave3.set("33333");//trabajador 3
+  lcd.setCursor(0,0);//posiciona el cursor
+  lcd.print("");
+  lcd.setCursor(0,1);//posiciona el cursor
   lcd.print("Clave Cambiada");
   break;
   case '4':
   clave4.set("44444");//trabajador 4
+  lcd.setCursor(0,0);//posiciona el cursor
+  lcd.print("");
+  lcd.setCursor(0,1);//posiciona el cursor
   lcd.print("Clave Cambiada");
   break;
   }
@@ -229,12 +236,14 @@ void reset_clave(){
 }
 
 void Masterpass(){
-  Serial.print("fjskfksdfksdfka");
- 
-  if(master.evaluate()){
-   reset_clave();
-   Serial.print("fjskf");
-
+lcd.clear();//limpiar lcd
+lcd.setCursor(0,1);//posiciona el cursor
+lcd.print("Ingrese Master");
+//verificar master
+if(master.evaluate()){
+  lcd.clear();//limpiar lcd
+  lcd.setCursor(0,1);//posiciona el cursor
+  lcd.print("Correcto");
   }
   }
 void contador (int j){
@@ -313,30 +322,14 @@ break;
 }
 
 void dis(){
-  // delay antirebotes
-   if(i<40){     // limite de conteo
-     i++;       // aumento de variable
-     decenas=i/10;  // valor de decenas
-     unidades= i-(decenas*10); // valor unidades
-    }
-   else{
-    i=0; // reset conteo
-    unidades=0; // reset unidades
-    decenas=0;  // reset decenas
-   }
- 
-   if(i<=40){     // limite de conteo
-     i--;       // aumento de variable
-     decenas=i/10;  // valor de decenas
-     unidades= i-(decenas*10); // valor unidades
-    }
- 
+ decenas=i/10;  // valor de decenas
+ unidades= i-(decenas*10); // valor unidades
  digitalWrite(uni,HIGH); // activacion de pin de unidades
  digitalWrite(dec,LOW);  // desactivacion de pin de decenas
  contador(unidades);    // llamo metodo de visualizacion
- delay(400);  // espero
-digitalWrite(uni,LOW);   // desactivacion de pin de unidades
+ delay(100);  // espero
+ digitalWrite(uni,LOW);   // desactivacion de pin de unidades
  digitalWrite(dec,HIGH);  // activacion de pin de decenas
  contador(decenas);  // llamo metodo de visualizacion
- delay(400); // espero
+ delay(100); // espero
 }
